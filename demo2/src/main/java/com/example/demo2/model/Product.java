@@ -15,12 +15,14 @@ public class Product {
     @Id
     @GeneratedValue
     @Column(nullable = false, unique = true)
-    private Long id;
+    private long id;
 
     @Column(nullable = false)
     private String name;
 
     private String brand;
+
+    private long price;
 
     private String description;
 
@@ -32,9 +34,19 @@ public class Product {
     public Product() {
         super();
     }
+
     public Product(String name, Date expiryDate) {
         super();
         this.name = name;
+        this.expiryDate = expiryDate;
+    }
+
+    public Product(String name, String brand, long price, String description, int quantity, Date expiryDate) {
+        this.name = name;
+        this.brand = brand;
+        this.price = price;
+        this.description = description;
+        this.quantity = quantity;
         this.expiryDate = expiryDate;
     }
 
