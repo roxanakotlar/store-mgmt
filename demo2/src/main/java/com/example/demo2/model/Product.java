@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.Objects;
 
 @Data
 @Entity
@@ -28,7 +29,6 @@ public class Product {
 
     private int quantity;
 
-    @Column(nullable = false)
     private Date expiryDate;
 
     public Product() {
@@ -39,6 +39,12 @@ public class Product {
         super();
         this.name = name;
         this.expiryDate = expiryDate;
+    }
+
+    public Product(String name, long price) {
+        super();
+        this.name = name;
+        this.price = price;
     }
 
     public Product(String name, String brand, long price, String description, int quantity, Date expiryDate) {
@@ -52,12 +58,25 @@ public class Product {
 
     @Override
     public boolean equals(Object obj) {
-        //same name and brand, same id?
-        return false;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        return Objects.equals(id, ((Product) obj).id);
     }
 
     @Override
     public String toString() {
-        return name;
+        return " id: " + id +
+                ",\n name: " + name +
+                ",\n brand: " + brand +
+                ",\n description: " + description +
+                ",\n price: " + price +
+                ",\n expiryDate: " + expiryDate +
+                ",\n quantity" + quantity +
+                "\n";
     }
 }

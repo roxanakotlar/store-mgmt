@@ -40,7 +40,7 @@ public class StoreApplicationTests {
 	}
 
 	@Test
-	public void whenAddProductNotAuthenticated_thenNOK() {
+	public void whenAddProduct_thenNotAuthenticated() {
 		final Product product = new Product("test1", new Date());
 		final Response response = RestAssured.given()
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -63,7 +63,7 @@ public class StoreApplicationTests {
 
 	@Test
 	public void  whenFindProduct_thenOK() {
-		long id = addTestProduct(1);
+		long id = addTestProduct(1).getId();
 
 		int getProductId = RestAssured.given().auth()
 				.basic("user", "password")
@@ -83,6 +83,58 @@ public class StoreApplicationTests {
 	}
 
 	@Test
+	public void whenUpdateProductPrice_thenOK() {
+		Product product = addTestProduct(1);
+		product.setPrice(1234);
+		final Response response = RestAssured.given().auth()
+				.basic("user", "password")
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.body(product)
+				.when().put(API_ROOT + "/change-price/{id}", product.getId());
+		assertEquals(HttpStatus.OK.value(), response.getStatusCode());
+		System.out.println(response.body().asString());
+	}
+
+	@Test
+	public void whenUpdateProductSamePrice_thenOK() {
+		Product product = addTestProduct(1);
+
+		final Response response = RestAssured.given().auth()
+				.basic("user", "password")
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.body(product)
+				.when().put(API_ROOT + "/change-price/{id}", product.getId());
+		assertEquals(HttpStatus.OK.value(), response.getStatusCode());
+		System.out.println(response.body().asString());
+	}
+
+	@Test
+	public void whenUpdateProduct_thenNotFound() {
+		Product product = addTestProduct(1);
+		product.setId(123);
+		final Response response = RestAssured.given().auth()
+				.basic("user", "password")
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.body(product)
+				.when().put(API_ROOT + "/change-price/{id}", 123);
+		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
+		System.out.println(response.body().asString());
+	}
+
+	@Test
+	public void whenUpdateProduct_thenOK() {
+		Product product = addTestProduct(1);
+		product.setName("newName");
+		final Response response = RestAssured.given().auth()
+				.basic("user", "password")
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.body(product)
+				.when().put(API_ROOT + "/{id}", product.getId());
+		assertEquals(HttpStatus.OK.value(), response.getStatusCode());
+		System.out.println(response.body().asString());
+	}
+
+	@Test
 	public void whenGetOutOfStockProducts_thenOK() {
 		addTestProduct(1);
 		addTestProduct(0);
@@ -95,7 +147,7 @@ public class StoreApplicationTests {
 		assertEquals(2, outOfStockProducts.size());
 	}
 
-	private long addTestProduct(int quantity){
+	private Product addTestProduct(int quantity) {
 		long random = System.currentTimeMillis();
 		Product product = new Product("name"+random, "brand" + random, random, "description" + random, quantity, new Date());
 		String addedProductId = RestAssured.given().auth()
@@ -105,7 +157,12 @@ public class StoreApplicationTests {
 				.when()
 				.post(API_ROOT + "/add-product").then().
 				statusCode(200).extract().body().asString();
-		return Long.parseLong(addedProductId);
+
+		//System.out.println(product.toString());
+		return RestAssured.given().auth()
+				.basic("user", "password")
+				.when().get(API_ROOT + "/find-by-id/{id}", addedProductId).as(Product.class);
+
 	}
 
 

@@ -20,13 +20,22 @@ public class StoreMgmtController {
         return "hello store!";
     }
 
-
+    /**
+     * Add a product to the database
+     *
+     * @param product
+     * @return product id
+     */
     @PostMapping("/add-product")
     public long addProduct(@RequestBody Product product) {
        return storeMgmtService.addProduct(product);
     }
 
-
+    /**
+     * Delete product by id
+     *
+     * @param id
+     */
     @DeleteMapping("/{id}")
     public void deleteProduct(@PathVariable long id) {
        storeMgmtService.deleteProduct(id);
@@ -41,14 +50,20 @@ public class StoreMgmtController {
     * */
 
     @PutMapping("/{id}")
-    public long updateProduct(@RequestBody Product product,
+    public Product updateProduct(@RequestBody Product product,
                                 @PathVariable long id) {
         return storeMgmtService.updateProduct(product, id);
     }
 
-
+    /**
+     * Update price for product
+     *
+     * @param product
+     * @param id
+     * @return updated product id
+     */
     @PutMapping("/change-price/{id}")
-    public long updatePrice(@RequestBody Product product, @PathVariable long id) {
+    public Product updatePrice(@RequestBody Product product, @PathVariable long id) {
       return storeMgmtService.updatePrice(product, id);
     }
 

@@ -16,11 +16,13 @@ public class StoreMgmtServiceImpl implements StoreMgmtService {
     private StoreMgmtRepo storeRepo;
 
     public long addProduct(Product product) {
+        log.trace("add product " + product);
         Product p = storeRepo.save(product);
         return p.getId();
     }
 
     public void deleteProduct(long id) {
+        log.trace("delete product " + id);
         storeRepo.findById(id)
                 .orElseThrow(NotFoundException::new);
         storeRepo.deleteById(id);
@@ -34,7 +36,9 @@ public class StoreMgmtServiceImpl implements StoreMgmtService {
      * @return updated product id
      * */
     @Override
-    public long updateProduct( Product product, long id) {
+    public Product updateProduct(Product product, long id) {
+        log.trace("update product " + product);
+
         if (product.getId() != id) {
             throw new ParameterException();
         }
@@ -42,11 +46,12 @@ public class StoreMgmtServiceImpl implements StoreMgmtService {
                 .orElseThrow(NotFoundException::new);
         storeRepo.save(product);
 
-        return product.getId();
+        return product;
     }
 
     @Override
-    public long updatePrice(Product product, long id) {
+    public Product updatePrice(Product product, long id) {
+        log.trace("update product price " + product);
         if (product.getId() != id) {
             throw new ParameterException();
         }
@@ -54,30 +59,34 @@ public class StoreMgmtServiceImpl implements StoreMgmtService {
         if (p.getPrice() != product.getPrice()) {
             p.setPrice(product.getPrice());
             storeRepo.save(p);
-        }
-        else{
+            return p;
+        } else {
             log.warn("Same price value; price was not updated");
+            return null;
         }
-        return product.getId();
     }
 
     @Override
     public Iterable<Product> productList() {
+        log.trace("get product");
         return storeRepo.findAll();
     }
 
     @Override
     public Product findById(long id) {
+        log.trace("get product " + id);
         return storeRepo.findById(id).orElseThrow(NotFoundException::new);
     }
 
     @Override
     public Iterable<Product> findByName(String name) {
+        log.trace("get product " + name);
         return storeRepo.findByName(name);
     }
 
     @Override
     public Iterable<Product> findOutOfStock() {
+        log.trace("get out of stock product ");
         return storeRepo.findByQuantity(0);
     }
 }

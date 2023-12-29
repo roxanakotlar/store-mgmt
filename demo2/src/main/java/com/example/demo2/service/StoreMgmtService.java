@@ -11,11 +11,10 @@ public interface StoreMgmtService {
     void deleteProduct(@PathVariable long id);
 
 
-    long updateProduct(@RequestBody Product product,
+    Product updateProduct(@RequestBody Product product,
                          @PathVariable long id);
 
-
-    long updatePrice(@RequestBody Product product, @PathVariable long id);
+    Product updatePrice(@RequestBody Product product, @PathVariable long id);
 
 
     Iterable<Product> productList();

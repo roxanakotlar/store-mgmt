@@ -9,10 +9,9 @@ import java.util.List;
 
 @Repository
 public interface StoreMgmtRepo  extends CrudRepository<Product, Long>{
-  //  Product findById(long id);
+
     List<Product> findByName(String name);
     List<Product> findByQuantity(int quantity);
-
 
     void deleteById(long id);
 }

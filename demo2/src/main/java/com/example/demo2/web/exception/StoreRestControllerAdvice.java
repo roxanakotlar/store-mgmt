@@ -11,11 +11,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class StoreRestControllerAdvice {
 
         @ExceptionHandler(value = NotAuthenticatedException.class)
-        public ResponseEntity<AdviceErrorMessage> handleNotAuthenticatedException(NotAuthorizedException e) {
+        public ResponseEntity<AdviceErrorMessage> handleNotAuthenticatedException(NotAuthenticatedException e) {
         log.trace("REST call missing/invalid authentication: " + e.getMessage(), this.getClass());
         return new ResponseEntity<>(new AdviceErrorMessage(e), HttpStatus.UNAUTHORIZED);
     }
 
+    //TODO implement this
         @ExceptionHandler(value = NotAuthorizedException.class)
         public ResponseEntity<AdviceErrorMessage> handleNotAuthorizedException(NotAuthorizedException e) {
           log.trace("REST call without the proper rights: " + e.getMessage(), this.getClass());
